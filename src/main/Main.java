@@ -27,6 +27,7 @@ public class Main {
 		//System.out.println(lines);
 		Metagroup currentMetagroup = null;
 		SemanticGroup currentSemanticGroup = null;
+		int nextIndex = 0;
 		for (String line : lines) {
 			if(line.equals(E)){
 				currentMetagroup.addGroup(currentSemanticGroup);
@@ -36,7 +37,7 @@ public class Main {
 					mgroups.add(currentMetagroup);
 					currentMetagroup.addGroup(currentSemanticGroup);
 				}
-				currentMetagroup = new Metagroup();
+				currentMetagroup = new Metagroup(nextIndex++);
 				currentSemanticGroup = null;
 			}else if (line.startsWith(R)){
 
@@ -57,6 +58,23 @@ public class Main {
 		}
 		for(Metagroup mg : mgroups){
 			System.out.println(mg);	
+		}
+		int nMGroups = mgroups.size();
+		int nRows = 180;
+		int nCols = 6;
+		int[][] where = new int[nMGroups][nRows];
+		Random gen = new Random(746352810L);
+		for(int i=0;i<nMGroups;i++){
+			where[i]=getAssignments(nRows,nCols,gen);
+		}
+		for(int i=0;i<nRows;i++){
+			Row row = new Row();
+			for(int j=0;j<nMGroups;j++){
+				int chosenCol = where[j][i];
+				Metagroup mg = mgroups.get(i);
+				row.addPair(mg.getPairAt(chosenCol, gen));
+			}
+			row.shuffle(gen);
 		}
 
 	}
